@@ -12,27 +12,27 @@ def parse_input_arguments():
 
     description = 'SVC-UAP. Unsupervised Temporal Action Proposals.'
     p = argparse.ArgumentParser(description=description)
-    p.add_argument('-data', choices=['ActivityNet', 'Thumos14'],
+    p.add_argument('-data', choices=['ActivityNet', 'Thumos14', 'Charades'],
                    default='ActivityNet', help='Dataset')
     p.add_argument('-gt', default='../gt/activity_net.v1-3.min.json',
                    help='Ground truth file in .json format.')
     p.add_argument('-h5', default='../h5/c3d-activitynet.hdf5',
                    help='Features in .hdf5 file.')
-    p.add_argument('-set', default='validation',
+    p.add_argument('-set', default='training',
                    choices=['training', 'validation', 'testing', 'Test'],
                    help='Dataset subset.')
-    p.add_argument('-init_n', type=int, default=256,
+    p.add_argument('-init_n', type=int, default=256, # 
                    help='Initial number of samples to take when starting the '
                         'algorithm or a new proposal.')
-    p.add_argument('-n', type=int, default=256,
+    p.add_argument('-n', type=int, default=256, # 
                    help='Number of new samples to take when analysing the same'
                         'proposal.')
-    p.add_argument('-th', type=float, default=0.1,
+    p.add_argument('-th', type=float, default=1, # 0.2
                    help='Classification error rate threshold.')
-    p.add_argument('-c', type=float, default= 1.1787e-5,
+    p.add_argument('-c', type=float, default= 1.1787e-5, # 0.019306
                    help='C parameter of the of the Linear SVM.')
     p.add_argument('-rpth', type=float, default=1,
-                   help='Rank-pooling threshold.')
+                   help='Rank-pooling threshold.') # 0.8
     p.add_argument('-res', default='../res/svc-uap-res.json',
                    help='Proposals result.')
     p.add_argument('-eval', action='store_false',
@@ -100,13 +100,20 @@ def main(data, gt, h5, set, init_n, n, th, c, rpth, res, eval, log, fig):
         print(f'{res}: No such file or directory.')
         return
     else:
-        average_n_proposals, average_recall, recall = run_evaluation(gt, res,
+        average_n_proposals, average_recall, recall, ar_an, num_p = run_evaluation(gt, res,
                                                                  subset=set)
         plot_metric(average_n_proposals, average_recall, recall, fig_file=fig)
 
-    return
+    return ar_an, num_p
 
 
 if __name__ == '__main__':
     args = parse_input_arguments()
-    main(**vars(args))
+    # for i in range(1, 10):
+    #     for j in range(1, 10):
+    #         i /= 10
+    #         j /= 10
+    #         args.rpth = i
+    #         args.th = j
+    args.res = '../res/' + args.data + '_' + args.set + '_result_rpth_' + str(args.rpth) + '_th_' + str(args.th) + '.json'
+    ar_an, num_p = main(**vars(args))

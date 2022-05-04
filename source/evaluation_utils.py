@@ -13,12 +13,12 @@ def run_evaluation(ground_truth_file, json_results_file,
                                  max_avg_nr_proposals=max_avg_n_proposals,
                                  subset=subset, verbose=True,
                                  check_status=False)
-    anet_proposal.evaluate()
+    ar_an, num_p = anet_proposal.evaluate()
     recall = anet_proposal.recall
     average_recall = anet_proposal.avg_recall
     average_n_proposals = anet_proposal.proposals_per_video
 
-    return average_n_proposals, average_recall, recall
+    return average_n_proposals, average_recall, recall, ar_an, num_p
 
 
 def plot_metric(average_n_proposals, average_recall, recall,

@@ -5,7 +5,7 @@ import time
 
 def init_log(subset, init_n_samples, n_samples, th, c, rp_th, log_file):
 
-    with open(log_file, 'w') as lf:
+    with open(log_file, 'a') as lf:
         lf.write(f'Execution initiated on {time.ctime()} \n\n')
         lf.write('Parameter configuration for this execution:\n\n')
         lf.write(f'subset: {subset}\n'
@@ -32,7 +32,9 @@ def frame_to_time(proposals, fps, dataset):
         for j in range(0, proposals.shape[1]):
             if dataset == 'ActivityNet':
                 temporal_proposals[i, j] = (8 * proposals[i, j] + 8) / fps
-            else:
+            elif dataset == 'Charades':
+                temporal_proposals[i, j] = proposals[i, j] / fps
+            else:    
                 temporal_proposals[i, j] = (16 * proposals[i, j]) / fps
 
     return temporal_proposals

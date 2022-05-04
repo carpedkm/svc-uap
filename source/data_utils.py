@@ -36,7 +36,14 @@ def get_vid_info(video, gt, h5, dataset='ActivityNet'):
     if dataset == 'ActivityNet':
         d = h5f['/v_' + video + '/c3d_features'][()]
         duration = parsedjf['database'][video]['duration']
-        fps = (8 * d.shape[0] + 8) / duration
+        fps = (8 * d.shape[0] + 8) / duration # fixed by mistake -> recheck
+    # code update
+    elif dataset == 'Charades':
+        d = h5f['/' + video + '/i3d_features'][()]
+        duration = parsedjf['database'][video]['duration'] # just use csv file maybe?
+        # print('d', d.shape[0])
+        fps = float(d.shape[0]) / float(duration)
+
     else:
         d = h5f[video + '/c3d_features'].value
         fps = parsedjf['database'][video]['fps']

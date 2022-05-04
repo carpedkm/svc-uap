@@ -6,3 +6,4 @@
 *.png
 !png/svc-uap.png
 *.idea
+*.npy
